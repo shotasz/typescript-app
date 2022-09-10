@@ -1,39 +1,52 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
+import type { NextPage } from 'next'
+import Head from 'next/head'
+import Image from 'next/image'
+import { createContext, ReactElement, ReactNode } from 'react'
+import styles from '../styles/Home.module.css'
 
 interface Engineer {
-  name: string;
+  name: string
   social?: {
-    facebook: boolean;
-    twitter: boolean;
-  };
+    facebook: boolean
+    twitter: boolean
+  }
+}
+
+type ContainerProps = {
+  title: string
+  children: ReactNode
+}
+
+const TitleContext = createContext('')
+
+const Title = () => {
+  return (
+    <TitleContext.Consumer>
+      {(title) => {
+        return <h1>{title}</h1>
+      }}
+    </TitleContext.Consumer>
+  )
+}
+
+const Header = () => {
+  return (
+    <div>
+      <Title />
+    </div>
+  )
 }
 
 const Home: NextPage = () => {
-  function getAsync(
-    id: string
-  ): Promise<{ success: boolean; message: string }> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          success: true,
-          message: id,
-        });
-      }, 1000);
-    });
-  }
+  const title = 'React Book'
 
-  async function asyncFn() {
-    const result = await getAsync("111");
+  return (
+    <div className={styles.container}>
+      <TitleContext.Provider value="title">
+        <Header />
+      </TitleContext.Provider>
+    </div>
+  )
+}
 
-    return console.log(`The result is ${result}`);
-  }
-
-  asyncFn().then((result) => result);
-
-  return <div className={styles.container}>Hello World</div>;
-};
-
-export default Home;
+export default Home
