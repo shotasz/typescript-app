@@ -1,59 +1,49 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import {
-  createContext,
-  memo,
-  ReactElement,
-  ReactNode,
-  useCallback,
-  useReducer,
-  useState
-} from 'react'
+import { ChangeEvent, useMemo, useState } from 'react'
 import styles from '../styles/Home.module.css'
 
-type ButtonProps = { onClick: () => void }
-type Action = 'DECREMENT' | 'INCREMENT' | 'DOUBLE' | 'RESET'
-
-const DecrementButton = (props: ButtonProps) => {
-  const { onClick } = props
-  console.log('Decrementが再描画しました')
-
-  return <button onClick={onClick}>Decrement</button>
-}
-const IncrementButton = memo((props: ButtonProps) => {
-  const { onClick } = props
-  console.log('Incrementが再描画しました')
-
-  return <button onClick={onClick}>Increment</button>
-})
-
-const DoubleButton = memo((props: ButtonProps) => {
-  const { onClick } = props
-  console.log('Doubleが再描画しました')
-
-  return <button onClick={onClick}>Double</button>
-})
-
 const Home = () => {
-  const [count, setCount] = useState(0)
-  const decrement = () => {
-    setCount((c) => c - 1)
-  }
-  const increment = () => {
-    setCount((c) => c + 1)
+  const [text, setText] = useState('')
+  const [items, setItems] = useState<string[]>([])
+
+  const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value)
   }
 
-  const double = useCallback(() => {
-    setCount((c) => c * 2)
-  }, [])
+  const onClickButton = () => {
+    setItems((prevItems) => {
+      return [...prevItems, text]
+    })
+
+    setText('')
+  }
+
+  const numberOfCharacters1 = () => {
+    return items.reduce((sub, item) => sub + item.length, 0)
+  }
+
+  const numberOfCharacters2 = useMemo(() => {
+    return items.reduce((sub, item) => sub + item.length, 0)
+  }, [items])
 
   return (
     <div className={styles.container}>
-      <p>{`Count : ${count}`}</p>
-      <DecrementButton onClick={decrement} />
-      <IncrementButton onClick={increment} />
-      <DoubleButton onClick={double} />
+      <p>UseMemoSample</p>
+      <div>
+        <input type="text" value={text} onChange={onChangeInput} />
+        <button onClick={onClickButton}>Add</button>
+      </div>
+      <div>
+        {items.map((item, index) => (
+          <p key={index}>{item}</p>
+        ))}
+      </div>
+      <div>
+        <p>Total Number of Characters 1 : {numberOfCharacters1()}</p>
+        <p>Total Number of Characters 2 : {numberOfCharacters2}</p>
+      </div>
     </div>
   )
 }
