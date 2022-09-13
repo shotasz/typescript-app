@@ -1,49 +1,68 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import { ChangeEvent, useMemo, useState } from 'react'
+import { ChangeEvent, useMemo, useState, useEffect } from 'react'
 import styles from '../styles/Home.module.css'
 
+const UPDATE_CYCLE = 1000
+
+const KEY_LOCALE = 'KEY_LOCALE'
+
+enum Locale {
+  US = 'en-US',
+  JP = 'ja-JP'
+}
+
+const getLocale = (text: string) => {
+  switch (text) {
+    case Locale.US:
+      return Locale.US
+    case Locale.JP:
+      return Locale.JP
+
+    default:
+      return Locale.US
+  }
+}
+
 const Home = () => {
-  const [text, setText] = useState('')
-  const [items, setItems] = useState<string[]>([])
+  // const [timestamp, setTimestamp] = useState(new Date())
+  // const [locale, setLocale] = useState(Locale.US)
 
-  const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value)
-  }
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setTimestamp(new Date())
+  //   }, UPDATE_CYCLE)
 
-  const onClickButton = () => {
-    setItems((prevItems) => {
-      return [...prevItems, text]
-    })
+  //   return () => {
+  //     clearInterval(timer)
+  //   }
+  // }, [])
 
-    setText('')
-  }
+  // useEffect(() => {
+  //   const savedLocale = localStorage.getItem(KEY_LOCALE)
+  //   if (savedLocale !== null) {
+  //     setLocale(getLocale(savedLocale))
+  //   }
+  // }, [])
 
-  const numberOfCharacters1 = () => {
-    return items.reduce((sub, item) => sub + item.length, 0)
-  }
-
-  const numberOfCharacters2 = useMemo(() => {
-    return items.reduce((sub, item) => sub + item.length, 0)
-  }, [items])
+  // useEffect(() => {
+  //   localStorage.setItem(KEY_LOCALE, locale)
+  // }, [locale])
 
   return (
     <div className={styles.container}>
-      <p>UseMemoSample</p>
-      <div>
-        <input type="text" value={text} onChange={onChangeInput} />
-        <button onClick={onClickButton}>Add</button>
-      </div>
-      <div>
-        {items.map((item, index) => (
-          <p key={index}>{item}</p>
-        ))}
-      </div>
-      <div>
-        <p>Total Number of Characters 1 : {numberOfCharacters1()}</p>
-        <p>Total Number of Characters 2 : {numberOfCharacters2}</p>
-      </div>
+      <p>
+        {/* <span id="current-time-label">現在時刻</span>
+        <span>: {timestamp.toLocaleString(locale)}</span>
+        <select
+          value={locale}
+          onChange={(e) => setLocale(getLocale(e.target.value))}
+        >
+          <option value="en-US">en-US</option>
+          <option value="ja-JP">ja-JP</option>
+        </select> */}
+      </p>
     </div>
   )
 }
