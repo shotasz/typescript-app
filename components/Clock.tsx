@@ -1,64 +1,46 @@
-import React, { useEffect, useState } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState
+} from 'react'
 
-const UPDATE_CYCLE = 1000
-
-const KEY_LOCALE = 'KEY_LOCALE'
-
-enum Locale {
-  US = 'en-US',
-  JP = 'ja-JP'
+type User = {
+  id: number
+  name: string
 }
 
-const getLocale = (text: string) => {
-  switch (text) {
-    case Locale.US:
-      return Locale.US
-    case Locale.JP:
-      return Locale.JP
+const UserContext = createContext<User | null>(null)
 
-    default:
-      return Locale.US
-  }
+const GrandChild = () => {
+  const user = useContext(UserContext)
+
+  return user !== null ? <p>Hello {user.name}</p> : null
 }
 
-const Clock = () => {
-  const [timestamp, setTimestamp] = useState(new Date())
-  const [locale, setLocale] = useState(Locale.US)
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimestamp(new Date())
-    }, UPDATE_CYCLE)
-
-    return () => {
-      clearInterval(timer)
-    }
-  }, [])
-
-  useEffect(() => {
-    const savedLocale = localStorage.getItem(KEY_LOCALE)
-    if (savedLocale !== null) {
-      setLocale(getLocale(savedLocale))
-    }
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem(KEY_LOCALE, locale)
-  }, [locale])
+const Child = () => {
+  const now = new Date()
 
   return (
     <div>
-      <p>
-        <span id="current-time-label">現在時刻</span>
-        <span>: {timestamp.toLocaleString(locale)}</span>
-        <select
-          value={locale}
-          onChange={(e) => setLocale(getLocale(e.target.value))}
-        >
-          <option value="en-US">en-US</option>
-          <option value="ja-JP">ja-JP</option>
-        </select>
-      </p>
+      {/* <p>Current: {now.toLocaleString()}</p> */}
+      <GrandChild />
+    </div>
+  )
+}
+
+const Clock = () => {
+  const user: User = {
+    id: 1,
+    name: 'Miguel'
+  }
+
+  return (
+    <div>
+      <UserContext.Provider value={user}>
+        <Child />
+      </UserContext.Provider>
     </div>
   )
 }
