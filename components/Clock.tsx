@@ -1,39 +1,28 @@
 import React, {
   ChangeEvent,
+  useCallback,
+  useDebugValue,
   useRef,
-  useState,
-  useImperativeHandle,
-  forwardRef
+  useState
 } from 'react'
 
-const Child = forwardRef((props, ref) => {
-  const [message, setMessage] = useState<string | null>(null)
+const useInput = () => {
+  const [state, setState] = useState('')
+  const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setState(e.target.value)
+  })
 
-  useImperativeHandle(ref, () => ({
-    showMessage: () => {
-      const date = new Date()
-      const message = `Hello, its ${date.toLocaleString()} now`
-      setMessage(message)
-    }
-  }))
+  useDebugValue(`Input: ${state}`)
 
-  return <div>{message !== null ? <p>{message}</p> : null}</div>
-})
+  return [state, onChange] as const
+}
 
-const Clock = () => {
-  const childRef = useRef<{ showMessage: () => void }>(null)
-  const onClick = () => {
-    if (childRef.current !== null) {
-      childRef.current.showMessage()
-    }
-  }
-
+export const Clock = () => {
+  const [text, onChangeText] = useInput()
   return (
     <div>
-      <button onClick={onClick}>Show Message</button>
-      <Child ref={childRef} />
+      <input type="text" value={text} onChange={onChangeText} />
+      <p>Input: {text}</p>
     </div>
   )
 }
-
-export default Clock
