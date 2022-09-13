@@ -1,46 +1,50 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useState
-} from 'react'
+import React, { ChangeEvent, useRef, useState } from 'react'
 
-type User = {
-  id: number
-  name: string
-}
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const UserContext = createContext<User | null>(null)
-
-const GrandChild = () => {
-  const user = useContext(UserContext)
-
-  return user !== null ? <p>Hello {user.name}</p> : null
-}
-
-const Child = () => {
-  const now = new Date()
-
-  return (
-    <div>
-      {/* <p>Current: {now.toLocaleString()}</p> */}
-      <GrandChild />
-    </div>
-  )
-}
+const UPLOAD_DELAY = 5000
 
 const Clock = () => {
-  const user: User = {
-    id: 1,
-    name: 'Miguel'
+  const inputImageRef = useRef<HTMLInputElement | null>(null)
+
+  const fileRef = useRef<File | null>(null)
+  const [message, setMessage] = useState<string | null>('')
+
+  const onClickText = () => {
+    if (inputImageRef.current !== null) {
+      inputImageRef.current.click()
+    }
   }
 
+  const onChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+
+    if (files !== null && files.length > 0) {
+      fileRef.current = files[0]
+    }
+  }
+
+  const onClickUpload = async () => {
+    if (fileRef.current !== null) {
+      await sleep(UPLOAD_DELAY)
+      setMessage(`${fileRef.current.name} has been successfully uploaded!`)
+    }
+  }
   return (
     <div>
-      <UserContext.Provider value={user}>
-        <Child />
-      </UserContext.Provider>
+      <p style={{ textDecoration: 'underline' }} onClick={onClickText}>
+        画像をアップロード
+      </p>
+      <input
+        type="file"
+        ref={inputImageRef}
+        accept="image/*"
+        onChange={onChangeImage}
+        style={{ visibility: 'hidden' }}
+      />
+      <br />
+      <button onClick={onClickUpload}>アップロードする</button>
+      {message !== null && <p>{message}</p>}
     </div>
   )
 }
