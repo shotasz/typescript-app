@@ -1,50 +1,37 @@
-import React, { ChangeEvent, useRef, useState } from 'react'
+import React, {
+  ChangeEvent,
+  useRef,
+  useState,
+  useImperativeHandle,
+  forwardRef
+} from 'react'
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+const Child = forwardRef((props, ref) => {
+  const [message, setMessage] = useState<string | null>(null)
 
-const UPLOAD_DELAY = 5000
+  useImperativeHandle(ref, () => ({
+    showMessage: () => {
+      const date = new Date()
+      const message = `Hello, its ${date.toLocaleString()} now`
+      setMessage(message)
+    }
+  }))
+
+  return <div>{message !== null ? <p>{message}</p> : null}</div>
+})
 
 const Clock = () => {
-  const inputImageRef = useRef<HTMLInputElement | null>(null)
-
-  const fileRef = useRef<File | null>(null)
-  const [message, setMessage] = useState<string | null>('')
-
-  const onClickText = () => {
-    if (inputImageRef.current !== null) {
-      inputImageRef.current.click()
+  const childRef = useRef<{ showMessage: () => void }>(null)
+  const onClick = () => {
+    if (childRef.current !== null) {
+      childRef.current.showMessage()
     }
   }
 
-  const onChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-
-    if (files !== null && files.length > 0) {
-      fileRef.current = files[0]
-    }
-  }
-
-  const onClickUpload = async () => {
-    if (fileRef.current !== null) {
-      await sleep(UPLOAD_DELAY)
-      setMessage(`${fileRef.current.name} has been successfully uploaded!`)
-    }
-  }
   return (
     <div>
-      <p style={{ textDecoration: 'underline' }} onClick={onClickText}>
-        画像をアップロード
-      </p>
-      <input
-        type="file"
-        ref={inputImageRef}
-        accept="image/*"
-        onChange={onChangeImage}
-        style={{ visibility: 'hidden' }}
-      />
-      <br />
-      <button onClick={onClickUpload}>アップロードする</button>
-      {message !== null && <p>{message}</p>}
+      <button onClick={onClick}>Show Message</button>
+      <Child ref={childRef} />
     </div>
   )
 }
