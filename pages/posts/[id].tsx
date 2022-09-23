@@ -23,10 +23,44 @@ const Post: NextPage<PostProps> = (props) => {
       </Head>
       <main>
         <p>このページは静的サイト生成によってビルド時に生成されたページ</p>
-        <p>`/posts/${id}に対応するページです`</p>
+        <p>{`/posts/${id}に対応するページです`}</p>
       </main>
     </div>
   )
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = [
+    {
+      params: {
+        id: '1'
+      }
+    },
+    {
+      params: {
+        id: '2'
+      }
+    },
+    {
+      params: {
+        id: '3'
+      }
+    }
+  ]
+
+  return { paths, fallback: false }
+}
+
+export const getStaticProps: GetStaticProps<PostProps> = async (context) => {
+  const id = Array.isArray(context.params!['id'])
+    ? context.params!['id'][0]
+    : context.params!['id']
+
+  return {
+    props: {
+      id
+    }
+  }
 }
 
 export default Post
