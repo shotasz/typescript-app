@@ -1,15 +1,35 @@
 import { MouseEvent, useState } from 'react'
-import { ComponentMeta } from '@storybook/react'
+import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { StyledButton } from '../components/StyledButton'
 
 import { action } from '@storybook/addon-actions'
 
 export default {
   title: 'StyledButton',
-  component: StyledButton
+  component: StyledButton,
+  argTypes: {
+    variant: {
+      control: { type: 'radio' },
+      options: ['primary', 'success', 'transparent']
+    },
+    children: {
+      control: { type: 'text' }
+    }
+  }
 } as ComponentMeta<typeof StyledButton>
 
 const incrementAction = action('increment')
+
+const Template: ComponentStory<typeof StyledButton> = (args) => (
+  <StyledButton {...args} />
+)
+
+export const TemplateTest = Template.bind({})
+
+TemplateTest.args = {
+  variant: 'primary',
+  children: 'Primary'
+}
 
 export const Primary = (props: any) => {
   const [count, setCount] = useState(0)
