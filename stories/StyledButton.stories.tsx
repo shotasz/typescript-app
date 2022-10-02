@@ -1,6 +1,7 @@
 import { MouseEvent, useState } from 'react'
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { StyledButton } from '../components/StyledButton'
+import { linkTo } from '@storybook/addon-links'
 
 import { action } from '@storybook/addon-actions'
 
@@ -46,7 +47,11 @@ export const Primary = (props: any) => {
 }
 export const Success = (props: any) => {
   return (
-    <StyledButton {...props} variant="success">
+    <StyledButton
+      {...props}
+      variant="success"
+      onClick={linkTo('StyledButton', 'Transparent')}
+    >
       Success
     </StyledButton>
   )
