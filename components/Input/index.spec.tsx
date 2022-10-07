@@ -1,4 +1,10 @@
-import { render, screen, RenderResult } from '@testing-library/react'
+import {
+  render,
+  screen,
+  RenderResult,
+  fireEvent,
+  getByRole
+} from '@testing-library/react'
 import { Input } from '.'
 
 describe('Input', () => {
@@ -12,8 +18,21 @@ describe('Input', () => {
     renderResult.unmount()
   })
 
-  it('should empty in input on initial render', () => {
+  it('should reset when user clicks button', async () => {
+    const inputText = 'Test input text'
     const inputNode = screen.getByLabelText('Username') as HTMLInputElement
+
+    fireEvent.change(inputNode, {
+      target: {
+        value: inputText
+      }
+    })
+
+    const buttonNode = screen.getByRole('button', {
+      name: 'Reset'
+    }) as HTMLButtonElement
+
+    fireEvent.click(buttonNode)
 
     expect(inputNode).toHaveValue('')
   })
