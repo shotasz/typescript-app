@@ -8,6 +8,7 @@ import styles from '../styles/Home.module.css'
 import styled, { css } from 'styled-components'
 import { useRouter } from 'next/router'
 import { Input } from '../components/Input'
+import { DelayInput } from '../components/DelayInput'
 
 type BaseLinkProps = PropsWithChildren<LinkProps> & {
   className?: string
@@ -38,7 +39,7 @@ const Home: NextPage = () => {
     <div className={styles.container}>
       <StyledLink href="/">Go to Index</StyledLink>
       <Text>Themeから参照した</Text>
-      <Input label="Label" />
+      {/* <Input label="Label" /> */}
     </div>
   )
 }
