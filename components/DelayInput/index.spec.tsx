@@ -1,4 +1,4 @@
-import { render, screen, RenderResult } from '@testing-library/react'
+import { render, screen, RenderResult, fireEvent } from '@testing-library/react'
 
 import { DelayInput } from '.'
 
@@ -16,9 +16,18 @@ describe('DelayInput', () => {
     renderResult.unmount()
   })
 
-  it('should display empty in span on initial render', () => {
+  it('should display [入力中。。。] immediately after onChange event occurs', () => {
+    const inputText = 'Test input Text'
+    const inputNode = screen.getByTestId('input-text') as HTMLInputElement
+
+    fireEvent.change(inputNode, {
+      target: {
+        value: inputText
+      }
+    })
+
     const spanNode = screen.getByTestId('display-text') as HTMLSpanElement
 
-    expect(spanNode).toHaveTextContent('入力したテキスト:')
+    expect(spanNode).toHaveTextContent('入力中。。。')
   })
 })
